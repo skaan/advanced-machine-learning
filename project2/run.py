@@ -4,9 +4,9 @@ from sklearn.metrics import balanced_accuracy_score
 from sklearn.multiclass import OneVsRestClassifier, OneVsOneClassifier
 from scale import scale
 from sampling import sampling
-from preprocessing import preprocess
+from split import split
 
-def run(classifier, proto = False):
+def run(classifier, multi="OvO", proto = False):
 
     ## Reading input
     X_train = pd.read_csv('files/X_train.csv').drop('id', axis=1)
@@ -21,19 +21,28 @@ def run(classifier, proto = False):
 
     ## Splitting for validation
     if proto:
-        X_train, X_test, y_train, y_test = preprocess(X_train, y_train)
+        X_train, X_test, y_train, y_test = split(X_train, y_train)
         print("Finished splitting");
 
+    ## Sampling
     X_train, y_train = sampling(X_train, y_train, X_columns, y_columns)
     print("Finished sampling");
 
     ## Trainining
-    OvRClassifier = OneVsRestClassifier(classifier)
-    OvRClassifier.fit(X_train, y_train)
+    if multi == "OvR":
+        OvRClassifier = OneVsRestClassifier(classifier)
+        OvRClassifier.fit(X_train, y_train)
+        y_predict = OvRClassifier.predict(X_test)
+    elif multi == "OvO":
+        OVOClassifier = OneVsOneClassifier(classifier)
+        OVOClassifier.fit(X_train, y_train)
+        y_predict = OVOClassifier.predict(X_test)
+    else:
+        classifier.fit(X_train, y_train)
+        y_predict = classifier.predict(X_test)
     print("Finished training");
 
     ## Predicting
-    y_predict = OvRClassifier.predict(X_test)
     if proto:
         print(balanced_accuracy_score(y_test, y_predict))
 

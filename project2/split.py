@@ -1,7 +1,7 @@
 from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 
-def preprocess(X_train, y_train):
+def split(X_train, y_train):
     return train_test_split(
             X_train, 
             y_train, 
