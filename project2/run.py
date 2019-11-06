@@ -5,6 +5,7 @@ from sklearn.multiclass import OneVsRestClassifier, OneVsOneClassifier
 from scale import scale
 from sampling import sampling
 from split import split
+from outlier import find_outlier
 
 def run(classifier, multi="OvO", proto = False):
 
@@ -15,6 +16,10 @@ def run(classifier, multi="OvO", proto = False):
 
     X_columns = X_train.columns.values
     y_columns = y_train.columns.values
+    
+    ## Remove outliers
+    X_train, y_train = find_outlier(X_train.values, y_train.values[:,0])
+    X_test = find_outlier(X_test.values)
 
     ## Feature scaling
     X_train, X_test = scale(X_train, X_test)
