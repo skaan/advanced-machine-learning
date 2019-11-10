@@ -44,7 +44,9 @@ def run(classifier, multi="OvO", proto = False):
 
     ## Predicting
     if proto:
-        print(balanced_accuracy_score(y_test, y_predict))
+        score = balanced_accuracy_score(y_test, y_predict)
+        print(score)
+        return score
 
     ## Writing output
     if not proto:
@@ -53,4 +55,5 @@ def run(classifier, multi="OvO", proto = False):
             output.iat[i, 1] = y_predict[i]
         output.to_csv(f"outputs/{OvRClassifier.__class__.__name__}.{classifier.__class__.__name__}.csv", index=False)
     print("Finished predicting");
+    return 0
 
