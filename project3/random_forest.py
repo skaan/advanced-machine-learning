@@ -13,14 +13,14 @@ from sklearn.utils import compute_class_weight
 from run import run
 
 # get data
-X_train = pd.read_csv('files/X_train.csv').values[:,1:]
-y_train = pd.read_csv('files/y_train.csv').values[:,1 ]
-X_test  = pd.read_csv('files/X_test.csv').values[:,1:]
+#X_train = pd.read_csv('files/X_train_aug.csv').values[:,1:]
+#y_train = pd.read_csv('files/y_train_aug.csv').values[:,1 ]
+#X_test  = pd.read_csv('files/X_test_aug.csv').values[:,1:]
 
 PROTOTYPING = True
 
 # do a parameter search
-n_trees = np.array([128,129,130,131,132,133,134])
+n_trees = np.array([40,50,60,70,80])
 boot_opt = [False, True]
 random_state = 1000
 weights = [None, 'balanced', 'balanced_subsample']
@@ -56,6 +56,5 @@ for i in range(len(n_trees)):
 # Do the final prediction
 PROTOTYPING = False
 # those are the best params from the parameter search
-run(X_train, y_train, X_test,
-    classifier=RandomForestClassifier(n_estimators=134,bootstrap=False, oob_score=False,
-                                      class_weight='balanced'), proto=PROTOTYPING)
+run(classifier=RandomForestClassifier(n_estimators=100, bootstrap=True, oob_score=True,
+                                      class_weight='balanced_subsample'), proto=PROTOTYPING)
